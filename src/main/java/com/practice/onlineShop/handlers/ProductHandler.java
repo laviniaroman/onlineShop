@@ -12,7 +12,7 @@ import static org.springframework.http.ResponseEntity.status;
 @ControllerAdvice
 public class ProductHandler {
     @ExceptionHandler(InvalidProductCodeException.class)
-    public ResponseEntity<String> handleInvalidProductCodeException(){
+    public ResponseEntity<String> handleInvalidProductCodeException() {
         return status(BAD_REQUEST).body("Invalid product code.");
     }
 }

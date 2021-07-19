@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProductMapper {
 
-    public Product toEntity(ProductVO productVO){
-        if(productVO == null) {
+    public Product toEntity(ProductVO productVO) {
+        if (productVO == null) {
             return null;
         }
         Product product = new Product();

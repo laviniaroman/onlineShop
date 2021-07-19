@@ -17,7 +17,7 @@ public class ProductController {
 
 
     @PostMapping("/{customerId}")
-    public void addProduct(@RequestBody ProductVO productVO, @PathVariable Long customerId){
+    public void addProduct(@RequestBody ProductVO productVO, @PathVariable Long customerId) {
         productService.addProduct(productVO, customerId);
     }
 
@@ -27,7 +27,7 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<ProductVO> getProducts(){
+    public List<ProductVO> getProducts() {
         return productService.getProducts();
     }
 

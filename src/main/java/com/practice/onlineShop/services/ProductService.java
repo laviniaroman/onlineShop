@@ -20,15 +20,15 @@ public class ProductService {
     private final ProductRepository productRepository;
 
 
-    public void addProduct(ProductVO productVO, Long customerId){
-        System.out.println("Customer with id " + customerId +" is in service");
+    public void addProduct(ProductVO productVO, Long customerId) {
+        System.out.println("Customer with id " + customerId + " is in service");
         Product product = productMapper.toEntity(productVO);
         productRepository.save(product);
     }
 
     public ProductVO getProduct(String productCode) throws InvalidProductCodeException {
         Optional<Product> productOptional = productRepository.findByCode(productCode);
-        if(!productOptional.isPresent()){
+        if (!productOptional.isPresent()) {
             throw new InvalidProductCodeException();
         }
 
@@ -36,11 +36,11 @@ public class ProductService {
         return productMapper.toVO(product);
     }
 
-    public List<ProductVO> getProducts(){
+    public List<ProductVO> getProducts() {
         List<ProductVO> products = new ArrayList<>();
         Iterable<Product> productsFromDbIterable = productRepository.findAll();
         Iterator<Product> iterator = productsFromDbIterable.iterator();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             Product product = iterator.next();
             ProductVO productVO = productMapper.toVO(product);
             products.add(productVO);
@@ -51,7 +51,7 @@ public class ProductService {
 
     public void updateProduct(ProductVO productVO, Long customerId) throws InvalidProductCodeException {
         System.out.println("Customer with ID " + customerId + "is in service for update");
-        if(productVO.getCode() == null){
+        if (productVO.getCode() == null) {
             throw new InvalidProductCodeException();
         }
         Product product = getProductEntity(productVO.getCode());
@@ -67,11 +67,11 @@ public class ProductService {
 
     public void deleteProduct(String productCode, Long customerId) throws InvalidProductCodeException {
         System.out.println("Customer with ID " + customerId + "is deleting " + productCode);
-        if(productCode == null){
+        if (productCode == null) {
             throw new
                     InvalidProductCodeException();
         }
-       Product product = getProductEntity(productCode);
+        Product product = getProductEntity(productCode);
         productRepository.delete(product);
 
 
@@ -79,7 +79,7 @@ public class ProductService {
 
     private Product getProductEntity(String productCode) throws InvalidProductCodeException {
         Optional<Product> productOptional = productRepository.findByCode(productCode);
-        if(!productOptional.isPresent()){
+        if (!productOptional.isPresent()) {
             throw new InvalidProductCodeException();
         }
         return productOptional.get();

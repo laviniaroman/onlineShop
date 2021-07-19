@@ -27,5 +27,4 @@ public class User {
     private Collection<Roles> roles;
 
 
-
 }

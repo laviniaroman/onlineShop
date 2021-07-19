@@ -25,17 +25,19 @@ public class SecurityAspect {
     private final UserRepository userRepository;
 
     @Pointcut("execution(* com.practice.onlineShop.services.ProductService.addProduct(..))")
-    public void addProduct(){}
+    public void addProduct() {
+    }
 
     @Pointcut("execution(* com.practice.onlineShop.services.ProductService.updateProduct(..))")
-    public void updateProduct(){}
+    public void updateProduct() {
+    }
 
     @Before("com.practice.onlineShop.aspects.SecurityAspect.addProduct()")
     public void checkSecurityBeforeAddingProduct(JoinPoint joinPoint) throws InvalidCustomerIdException {
         Long customerId = (Long) joinPoint.getArgs()[1];
         Optional<User> userOptional = userRepository.findById(customerId);
 
-        if(!userOptional.isPresent()){
+        if (!userOptional.isPresent()) {
             throw new InvalidCustomerIdException();
         }
 
@@ -43,23 +45,24 @@ public class SecurityAspect {
         System.out.println(customerId);
 
     }
+
     @Before("com.practice.onlineShop.aspects.SecurityAspect.updateProduct()")
     public void checkSecurityBeforeUpdatingProduct(JoinPoint joinPoint) throws InvalidCustomerIdException {
         Long customerId = (Long) joinPoint.getArgs()[1];
         Optional<User> userOptional = userRepository.findById(customerId);
 
-        if(!userOptional.isPresent()){
+        if (!userOptional.isPresent()) {
             throw new InvalidCustomerIdException();
         }
 
         User user = userOptional.get();
-        if(userIsNotAllowedToUpdateProduct(user.getRoles())){
+        if (userIsNotAllowedToUpdateProduct(user.getRoles())) {
             throw new InvalidCustomerIdException();
         }
     }
 
-    private boolean userIsNotAllowedToUpdateProduct(Collection<Roles> roles){
-        return (! roles.contains(ADMIN) && !roles.contains(EDITOR));
+    private boolean userIsNotAllowedToUpdateProduct(Collection<Roles> roles) {
+        return (!roles.contains(ADMIN) && !roles.contains(EDITOR));
     }
 
 }

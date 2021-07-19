@@ -11,7 +11,7 @@ import static org.springframework.http.ResponseEntity.status;
 @ControllerAdvice
 public class SecurityHandler {
     @ExceptionHandler(InvalidCustomerIdException.class)
-    public ResponseEntity<String> handleInvalidCustomerIdException(){
+    public ResponseEntity<String> handleInvalidCustomerIdException() {
         return status(BAD_REQUEST).body("Invalid ID.");
     }
 }
