@@ -21,8 +21,8 @@ public class User {
     @Embedded
     private Address address;
     @ElementCollection
-    @CollectionTable(name="user_roles", joinColumns=@JoinColumn(name="user_id"))
-    @Column(name="roles")
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "roles")
     @Enumerated(EnumType.STRING)
     private Collection<Roles> roles;
 
