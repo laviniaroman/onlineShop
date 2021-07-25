@@ -36,5 +36,20 @@ public class OrderHandler {
         return status(BAD_REQUEST).body("Invalid order ID.");
     }
 
+    @ExceptionHandler(OrderAlreadyDeliveredException.class)
+    public ResponseEntity<String> OrderAlreadyDeliveredException() {
+        return status(BAD_REQUEST).body("Order already delivered.");
+    }
+
+    @ExceptionHandler(OrderCanceledException.class)
+    public ResponseEntity<String> OrderCanceledException() {
+        return status(BAD_REQUEST).body("Order is canceled.");
+    }
+
+    @ExceptionHandler(OrderNotDeliveredYetException.class)
+    public ResponseEntity<String> OrderNotDeliveredYetException() {
+        return status(BAD_REQUEST).body("Order is not delivered yet.");
+    }
+
 
 }

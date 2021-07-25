@@ -30,6 +30,10 @@ public class SecurityAspect {
     public void addProduct() {
     }
 
+    @Pointcut("execution(* com.practice.onlineShop.services.ProductService.addStock(..))")
+    public void addStock() {
+    }
+
     @Pointcut("execution(* com.practice.onlineShop.services.ProductService.updateProduct(..))")
     public void updateProduct() {
     }
@@ -42,16 +46,26 @@ public class SecurityAspect {
     public void deliverPointcut() {
     }
 
-    @Before("com.practice.onlineShop.aspects.SecurityAspect.addProduct()")
-    public void checkSecurityBeforeAddingProduct(JoinPoint joinPoint) throws InvalidCustomerIdException {
-        Long customerId = (Long) joinPoint.getArgs()[1];
+    @Pointcut("execution(* com.practice.onlineShop.services.OrderService.cancelOrder(..))")
+    public void cancelOrderPointcut() {
+    }
+
+    @Pointcut("execution(* com.practice.onlineShop.services.OrderService.returnOrder(..))")
+    public void returnOrderPointcut() {
+    }
+
+    @Before("com.practice.onlineShop.aspects.SecurityAspect.addStock()")
+    public void checkSecurityBeforeAddingStock(JoinPoint joinPoint) throws InvalidCustomerIdException, InvalidOperationException {
+        Long customerId = (Long) joinPoint.getArgs()[2];
         Optional<User> userOptional = userRepository.findById(customerId);
 
         if (!userOptional.isPresent()) {
             throw new InvalidCustomerIdException();
         }
-
         User user = userOptional.get();
+        if (userIsNotAllowedToAddStock(user.getRoles())) {
+            throw new InvalidOperationException();
+        }
         System.out.println(customerId);
 
     }
@@ -109,10 +123,57 @@ public class SecurityAspect {
 
     }
 
+    @Before("com.practice.onlineShop.aspects.SecurityAspect.cancelOrderPointcut()")
+    public void checkSecurityBeforeCancelingOrder(JoinPoint joinPoint) throws InvalidCustomerIdException, InvalidOperationException {
+        Long customerId = (Long) joinPoint.getArgs()[1];
+        Optional<User> userOptional = userRepository.findById(customerId);
+
+        if (!userOptional.isPresent()) {
+            throw new InvalidCustomerIdException();
+        }
+
+        User user = userOptional.get();
+
+        if (userIsNotAllowedToCancel(user.getRoles())) {
+            throw new InvalidOperationException();
+        }
+        System.out.println(customerId);
+
+    }
+
+    @Before("com.practice.onlineShop.aspects.SecurityAspect.returnOrderPointcut()")
+    public void checkSecurityBeforeReturningOrder(JoinPoint joinPoint) throws InvalidCustomerIdException, InvalidOperationException {
+        Long customerId = (Long) joinPoint.getArgs()[1];
+        Optional<User> userOptional = userRepository.findById(customerId);
+
+        if (!userOptional.isPresent()) {
+            throw new InvalidCustomerIdException();
+        }
+
+        User user = userOptional.get();
+
+        if (userIsNotAllowedToReturnOrder(user.getRoles())) {
+            throw new InvalidOperationException();
+        }
+        System.out.println(customerId);
+
+    }
+
+    private boolean userIsNotAllowedToAddStock(Collection<Roles> roles) {
+        return !roles.contains(ADMIN);
+    }
+
+    private boolean userIsNotAllowedToReturnOrder(Collection<Roles> roles) {
+        return !roles.contains(CLIENT);
+    }
+
+    private boolean userIsNotAllowedToCancel(Collection<Roles> roles) {
+        return !roles.contains(CLIENT);
+    }
+
     private boolean userIsNotAllowedToDeliver(Collection<Roles> roles) {
         return roles.contains(EXPEDITOR);
     }
-
 
     private boolean userIsNotAllowedToAddAnOrder(Collection<Roles> roles) {
         return !roles.contains(CLIENT);

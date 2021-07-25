@@ -8,6 +8,7 @@ import com.practice.onlineShop.vos.ProductVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -67,14 +68,25 @@ public class ProductService {
 
     public void deleteProduct(String productCode, Long customerId) throws InvalidProductCodeException {
         System.out.println("Customer with ID " + customerId + "is deleting " + productCode);
-        if (productCode == null) {
+        verifyProductCode(productCode);
+/*        if (productCode == null) {
             throw new
                     InvalidProductCodeException();
-        }
+        }*/
         Product product = getProductEntity(productCode);
         productRepository.delete(product);
 
 
+    }
+
+    @Transactional
+    public void addStock(String productCode, Integer quantity, Long customerId) throws InvalidProductCodeException {
+        System.out.println("Customer with ID " + customerId + " to add stock for product code  " + productCode +
+                " with a number of items of " + quantity);
+        verifyProductCode(productCode);
+        Product product = getProductEntity(productCode);
+        int oldStock = product.getStock();
+        product.setStock(oldStock + quantity);
     }
 
     private Product getProductEntity(String productCode) throws InvalidProductCodeException {
@@ -83,6 +95,12 @@ public class ProductService {
             throw new InvalidProductCodeException();
         }
         return productOptional.get();
+    }
+
+    private void verifyProductCode(String productCode) throws InvalidProductCodeException {
+        if (productCode == null) {
+            throw new InvalidProductCodeException();
+        }
     }
 
 }
